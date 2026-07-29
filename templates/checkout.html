@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+
+<h1 style="margin-bottom: 1.2rem;">Checkout</h1>
+
+<div class="detail-grid" style="grid-template-columns: 1fr 350px;">
+    <div class="form-card" style="max-width: 100%;">
+        <h3 style="margin-bottom: 1rem;">Order Details</h3>
+        <form method="post">
+            <div class="form-group">
+                <label>Shipping Address</label>
+                <textarea name="address" required>{{ current_user.address or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Payment Method</label>
+                <select name="payment_method">
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                    <option value="Credit/Debit Card">Credit/Debit Card</option>
+                    <option value="UPI">UPI</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+        </form>
+    </div>
+
+    <div class="cart-summary" style="align-self: start;">
+        <h3 style="margin-bottom: 0.8rem;">Order Summary</h3>
+        {% for item in items %}
+        <div style="display:flex; justify-content:space-between; font-size:0.9rem; margin-bottom:0.4rem;">
+            <span>{{ item.medicine.name }} × {{ item.quantity }}</span>
+            <span>₹{{ '%.2f'|format(item.subtotal()) }}</span>
+        </div>
+        {% endfor %}
+        <hr style="margin: 0.8rem 0; border-color: var(--border);">
+        <div style="display:flex; justify-content:space-between; font-weight:700;">
+            <span>Total</span>
+            <span>₹{{ '%.2f'|format(total) }}</span>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

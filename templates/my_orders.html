@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}My Orders{% endblock %}
+{% block content %}
+
+<h1 style="margin-bottom: 1.2rem;">My Orders</h1>
+
+{% if orders %}
+    {% for order in orders %}
+    <div class="cart-summary" style="margin-bottom: 1rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.6rem;">
+            <div>
+                <strong>Order #{{ order.id }}</strong>
+                <span style="color: var(--muted); font-size: 0.85rem;"> &middot; {{ order.placed_at.strftime('%d %b %Y, %I:%M %p') }}</span>
+            </div>
+            <span class="status status-{{ order.status }}">{{ order.status }}</span>
+        </div>
+        {% for item in order.items %}
+        <div style="display:flex; justify-content:space-between; font-size:0.88rem; color: var(--muted); margin-bottom:0.2rem;">
+            <span>{{ item.medicine_name }} × {{ item.quantity }}</span>
+            <span>₹{{ '%.2f'|format(item.subtotal()) }}</span>
+        </div>
+        {% endfor %}
+        <hr style="margin: 0.6rem 0; border-color: var(--border);">
+        <div style="display:flex; justify-content:space-between; font-weight:700;">
+            <span>Total</span>
+            <span>₹{{ '%.2f'|format(order.total_amount) }}</span>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <p>You haven't placed any orders yet.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary" style="margin-top: 1rem;">Start Shopping</a>
+    </div>
+{% endif %}
+
+{% endblock %}

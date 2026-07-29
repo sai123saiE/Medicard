@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="category-bar">
+    <a href="{{ url_for('home') }}" class="{{ 'active' if not selected_category }}">All</a>
+    {% for cat in categories %}
+        <a href="{{ url_for('home', category=cat.id) }}" class="{{ 'active' if selected_category == cat.id }}">{{ cat.name }}</a>
+    {% endfor %}
+</div>
+
+{% if query %}
+    <p style="margin-bottom: 1rem; color: var(--muted);">Search results for "<strong>{{ query }}</strong>"</p>
+{% endif %}
+
+{% if medicines %}
+<div class="medicine-grid">
+    {% for med in medicines %}
+    <div class="medicine-card">
+        <a href="{{ url_for('medicine_detail', medicine_id=med.id) }}">
+            <img src="{{ url_for('static', filename='uploads/' + med.image_filename) }}"
+                 onerror="this.src='https://placehold.co/300x200?text=Medicine'" alt="{{ med.name }}">
+        </a>
+        {% if med.requires_prescription %}<span class="badge badge-rx">Rx Required</span>{% endif %}
+        <h3><a href="{{ url_for('medicine_detail', medicine_id=med.id) }}" style="color:inherit; text-decoration:none;">{{ med.name }}</a></h3>
+        <p class="manufacturer">{{ med.manufacturer }}</p>
+        <p class="price">₹{{ '%.2f'|format(med.price) }}</p>
+        {% if med.in_stock() %}
+            <span class="badge badge-in">In Stock ({{ med.stock }})</span>
+        {% else %}
+            <span class="badge badge-out">Out of Stock</span>
+        {% endif %}
+        <a href="{{ url_for('medicine_detail', medicine_id=med.id) }}" class="btn btn-primary btn-block" style="margin-top:0.6rem;">View Details</a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No medicines found. Try a different search or category.</p>
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ medicine.name }}{% endblock %}
+{% block content %}
+
+<a href="{{ url_for('home') }}" style="color: var(--muted); text-decoration:none;">&larr; Back to medicines</a>
+
+<div class="detail-grid" style="margin-top: 1rem;">
+    <div>
+        <img src="{{ url_for('static', filename='uploads/' + medicine.image_filename) }}"
+             onerror="this.src='https://placehold.co/400x400?text=Medicine'" alt="{{ medicine.name }}">
+    </div>
+    <div>
+        <h1>{{ medicine.name }}</h1>
+        <p class="manufacturer" style="margin: 0.4rem 0 1rem;">By {{ medicine.manufacturer }}</p>
+
+        {% if medicine.requires_prescription %}
+            <span class="badge badge-rx">Prescription Required</span>
+        {% endif %}
+        {% if medicine.in_stock() %}
+            <span class="badge badge-in">In Stock &mdash; {{ medicine.stock }} units available</span>
+        {% else %}
+            <span class="badge badge-out">Out of Stock</span>
+        {% endif %}
+
+        <p class="price" style="font-size: 1.6rem; margin: 1rem 0;">₹{{ '%.2f'|format(medicine.price) }}</p>
+
+        <p style="margin-bottom: 1.5rem;">{{ medicine.description }}</p>
+
+        {% if current_user.is_authenticated and not current_user.is_admin %}
+            {% if medicine.in_stock() %}
+            <form action="{{ url_for('add_to_cart', medicine_id=medicine.id) }}" method="post" style="display:flex; gap:0.6rem; align-items:center;">
+                <input type="number" name="quantity" value="1" min="1" max="{{ medicine.stock }}" style="width: 70px; padding:0.5rem; border:1px solid var(--border); border-radius:6px;">
+                <button type="submit" class="btn btn-primary">Add to Cart</button>
+            </form>
+            {% else %}
+                <p style="color: var(--danger);">This item is currently unavailable.</p>
+            {% endif %}
+        {% elif not current_user.is_authenticated %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary">Log in to purchase</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

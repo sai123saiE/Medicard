@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="{{ url_for('admin_dashboard') }}" class="active">Dashboard</a>
+    <a href="{{ url_for('admin_medicines') }}">Medicines</a>
+    <a href="{{ url_for('admin_categories') }}">Categories</a>
+    <a href="{{ url_for('admin_orders') }}">Orders</a>
+    <a href="{{ url_for('admin_users') }}">Users</a>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="number">{{ total_medicines }}</div>
+        <div class="label">Total Medicines</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ total_orders }}</div>
+        <div class="label">Total Orders</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ total_users }}</div>
+        <div class="label">Registered Customers</div>
+    </div>
+    <div class="stat-card">
+        <div class="number">{{ low_stock|length }}</div>
+        <div class="label">Low Stock Items</div>
+    </div>
+</div>
+
+<h2 class="section-title">Recent Orders</h2>
+<table>
+    <tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Placed</th></tr>
+    {% for order in recent_orders %}
+    <tr>
+        <td>#{{ order.id }}</td>
+        <td>{{ order.customer.name }}</td>
+        <td>₹{{ '%.2f'|format(order.total_amount) }}</td>
+        <td><span class="status status-{{ order.status }}">{{ order.status }}</span></td>
+        <td>{{ order.placed_at.strftime('%d %b %Y') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No orders yet.</td></tr>
+    {% endfor %}
+</table>
+
+{% if low_stock %}
+<h2 class="section-title">Low Stock Alert (≤ 10 units)</h2>
+<table>
+    <tr><th>Medicine</th><th>Stock Remaining</th></tr>
+    {% for med in low_stock %}
+    <tr><td>{{ med.name }}</td><td style="color: var(--danger); font-weight:600;">{{ med.stock }}</td></tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

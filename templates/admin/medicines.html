@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Manage Medicines{% endblock %}
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('admin_medicines') }}" class="active">Medicines</a>
+    <a href="{{ url_for('admin_categories') }}">Categories</a>
+    <a href="{{ url_for('admin_orders') }}">Orders</a>
+    <a href="{{ url_for('admin_users') }}">Users</a>
+</div>
+
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+    <h1>Manage Medicines</h1>
+    <a href="{{ url_for('admin_add_medicine') }}" class="btn btn-primary">+ Add Medicine</a>
+</div>
+
+<table>
+    <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Rx</th><th>Actions</th></tr>
+    {% for med in medicines %}
+    <tr>
+        <td>{{ med.name }}</td>
+        <td>{{ med.category.name if med.category else '-' }}</td>
+        <td>₹{{ '%.2f'|format(med.price) }}</td>
+        <td>{{ med.stock }}</td>
+        <td>{{ 'Yes' if med.requires_prescription else 'No' }}</td>
+        <td>
+            <a href="{{ url_for('admin_edit_medicine', medicine_id=med.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+            <a href="{{ url_for('admin_delete_medicine', medicine_id=med.id) }}" class="btn btn-danger btn-sm"
+               onclick="return confirm('Delete {{ med.name }}?')">Delete</a>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No medicines added yet.</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

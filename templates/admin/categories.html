@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Manage Categories{% endblock %}
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('admin_medicines') }}">Medicines</a>
+    <a href="{{ url_for('admin_categories') }}" class="active">Categories</a>
+    <a href="{{ url_for('admin_orders') }}">Orders</a>
+    <a href="{{ url_for('admin_users') }}">Users</a>
+</div>
+
+<div class="detail-grid" style="grid-template-columns: 350px 1fr;">
+    <div class="form-card" style="max-width: 100%;">
+        <h3 style="margin-bottom: 1rem;">Add Category</h3>
+        <form method="post">
+            <div class="form-group">
+                <label>Category Name</label>
+                <input type="text" name="name" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add Category</button>
+        </form>
+    </div>
+
+    <table style="align-self: start;">
+        <tr><th>Category</th><th>Medicines</th><th>Actions</th></tr>
+        {% for cat in categories %}
+        <tr>
+            <td>{{ cat.name }}</td>
+            <td>{{ cat.medicines|length }}</td>
+            <td>
+                <a href="{{ url_for('admin_delete_category', category_id=cat.id) }}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Delete {{ cat.name }}? Medicines in it will be uncategorized.')">Delete</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3">No categories yet.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

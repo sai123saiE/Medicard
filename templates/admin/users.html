@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Registered Users{% endblock %}
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('admin_medicines') }}">Medicines</a>
+    <a href="{{ url_for('admin_categories') }}">Categories</a>
+    <a href="{{ url_for('admin_orders') }}">Orders</a>
+    <a href="{{ url_for('admin_users') }}" class="active">Users</a>
+</div>
+
+<h1 style="margin-bottom: 1.2rem;">Registered Customers</h1>
+
+<table>
+    <tr><th>Name</th><th>Email</th><th>Phone</th><th>Orders</th><th>Joined</th></tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone or '-' }}</td>
+        <td>{{ user.orders|length }}</td>
+        <td>{{ user.created_at.strftime('%d %b %Y') }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No customers registered yet.</td></tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
